@@ -1,0 +1,13 @@
+<a class="card" href="{{ url_for('post', slug=p.slug) }}">
+  {% if p.cover %}
+    <div class="card-img" style="background-image:url('{{ url_for('static', filename='uploads/' ~ p.cover) }}')"></div>
+  {% else %}
+    <div class="card-img placeholder"><span>{{ p.title[:1] }}</span></div>
+  {% endif %}
+  <div class="card-body">
+    <p class="meta">{{ p.created_at|date }} &middot; {{ p.content|reading_time }} min read
+      {% if not p.published %}<span class="badge">Draft</span>{% endif %}</p>
+    <h3>{{ p.title }}</h3>
+    <p class="muted">{{ p.excerpt }}</p>
+  </div>
+</a>

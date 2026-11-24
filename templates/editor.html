@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if post else 'New' }} article · {{ brand.name }}{% endblock %}
+{% block content %}
+<section class="container narrow-wide section">
+  <div class="section-head">
+    <h1>{{ 'Edit article' if post else 'New article' }}</h1>
+    <a class="arrow-link" href="{{ url_for('dashboard') }}">&larr; Dashboard</a>
+  </div>
+
+  <form class="panel editor" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf" value="{{ csrf_token }}">
+
+    <label for="title">Title</label>
+    <input id="title" name="title" required value="{{ post.title if post else request.form.get('title', '') }}">
+
+    <label for="excerpt">Short summary <span class="muted">(optional, auto-generated if empty)</span></label>
+    <textarea id="excerpt" name="excerpt" rows="2">{{ post.excerpt if post else request.form.get('excerpt', '') }}</textarea>
+
+    <label for="cover">Cover image</label>
+    {% if post and post.cover %}
+      <img class="cover-thumb" src="{{ url_for('static', filename='uploads/' ~ post.cover) }}" alt="">
+      <label class="check"><input type="checkbox" name="remove_cover"> Remove current cover</label>
+    {% endif %}
+    <input id="cover" type="file" name="cover" accept="image/*">
+
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="write">Write</button>
+      <button type="button" class="tab" data-tab="preview">Preview</button>
+      <button type="button" class="tab right" id="insert-image">Insert image</button>
+      <input type="file" id="image-file" accept="image/*" hidden>
+    </div>
+    <textarea id="content" name="content" rows="18" placeholder="Write in Markdown: # Heading, **bold**, *italic*, [link](https://...), - list">{{ post.content if post else request.form.get('content', '') }}</textarea>
+    <div id="preview" class="prose preview" hidden></div>
+
+    <label class="check">
+      <input type="checkbox" name="published" {% if not post or post.published %}checked{% endif %}>
+      Publish (uncheck to save as draft)
+    </label>
+
+    <button class="btn" type="submit">Save article</button>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>window.CSRF = "{{ csrf_token }}";
+window.URLS = {upload: "{{ url_for('upload_image') }}", preview: "{{ url_for('preview') }}"};</script>
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+{% endblock %}

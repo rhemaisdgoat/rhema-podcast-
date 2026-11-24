@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}About · {{ brand.name }}{% endblock %}
+{% block content %}
+<section class="container narrow section">
+  <div class="page-head">
+    <h1>About</h1>
+  </div>
+  <div class="prose">
+    <p class="lead">{{ brand.intro }}</p>
+    <p>{{ brand.about }}</p>
+  </div>
+  <h2>Get in touch</h2>
+  <p><a class="btn" href="mailto:{{ brand.email }}">Email me</a></p>
+  <div class="footer-links">
+    {% for name, url in brand.socials.items() %}
+      <a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

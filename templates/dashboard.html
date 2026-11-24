@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · {{ brand.name }}{% endblock %}
+{% block content %}
+<section class="container section">
+  <div class="section-head">
+    <h1>Dashboard</h1>
+    <div class="row">
+      <a class="btn" href="{{ url_for('new_post') }}">+ New article</a>
+      <form method="post" action="{{ url_for('logout') }}">
+        <input type="hidden" name="csrf" value="{{ csrf_token }}">
+        <button class="btn ghost" type="submit">Log out</button>
+      </form>
+    </div>
+  </div>
+
+  {% if posts %}
+  <div class="panel table-wrap">
+    <table>
+      <thead><tr><th>Title</th><th>Status</th><th>Date</th><th></th></tr></thead>
+      <tbody>
+        {% for p in posts %}
+        <tr>
+          <td><a href="{{ url_for('post', slug=p.slug) }}">{{ p.title }}</a></td>
+          <td>{% if p.published %}<span class="badge ok">Published</span>{% else %}<span class="badge">Draft</span>{% endif %}</td>
+          <td class="muted">{{ p.created_at|date }}</td>
+          <td class="actions">
+            <a href="{{ url_for('edit_post', post_id=p.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('delete_post', post_id=p.id) }}" data-confirm="Delete this article permanently?">
+              <input type="hidden" name="csrf" value="{{ csrf_token }}">
+              <button type="submit" class="link danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty"><p>You haven't written anything yet.</p></div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Blog · {{ brand.name }}{% endblock %}
+{% block content %}
+<section class="container section">
+  <div class="page-head">
+    <h1>Blog</h1>
+    <p class="muted">Articles, notes and ideas.</p>
+  </div>
+
+  <form class="search" method="get" action="{{ url_for('blog') }}">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search articles..." aria-label="Search articles">
+    <button class="btn" type="submit">Search</button>
+  </form>
+
+  {% if q %}<p class="muted">{{ total }} result{{ '' if total == 1 else 's' }} for "{{ q }}"</p>{% endif %}
+
+  {% if posts %}
+    <div class="grid">
+      {% for p in posts %}{% include "_card.html" %}{% endfor %}
+    </div>
+    {% if pages > 1 %}
+    <nav class="pagination">
+      {% if page > 1 %}<a href="{{ url_for('blog', page=page-1, q=q) }}">&larr; Newer</a>{% endif %}
+      <span class="muted">Page {{ page }} of {{ pages }}</span>
+      {% if page < pages %}<a href="{{ url_for('blog', page=page+1, q=q) }}">Older &rarr;</a>{% endif %}
+    </nav>
+    {% endif %}
+  {% else %}
+    <div class="empty"><p>No articles found.</p></div>
+  {% endif %}
+</section>
+{% endblock %}
